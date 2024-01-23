@@ -1,0 +1,85 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 320px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #3b3a3c;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    background: #e0e0e0;
+    border-radius: 7px;
+    padding: 30px;
+    margin: 5px;
+    width: 100%;
+}
+
+.button {
+    border: none;
+    padding: 10px;
+    background: #171717;
+    border: 2px solid #171717;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 18px;
+    color: #ecdbdb;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.button:hover {
+    background-color: #ffffff;
+    color: #171717;
+}
+
+.button:focus {
+    outline: none;
+    border: 2px solid #d0cece;
+}
+
+.error {
+    color: #d73838;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.input {
+    border: none;
+    font-size: 18px;
+    background: #ffffff;
+    color: #1f1e1e;
+    margin-bottom: 10px;
+    padding: 9px 10px;
+    border-radius: 5px;
+}
+
+.input:focus {
+    outline: 2px solid #1f1e1f;
+}
+
+.inputTextarea {
+    border: none;
+    font-size: 18px;
+    background: #ffffff;
+    color: #1f1e1e;
+    margin-bottom: 10px;
+    padding: 9px 10px;
+    border-radius: 5px;
+    max-width: 300px;
+    min-width: 300px;
+    max-height: 120px;
+    min-height: 50px;
+}
+
+.inputTextarea:focus {
+    outline: 2px solid #1f1e1f;
+}
