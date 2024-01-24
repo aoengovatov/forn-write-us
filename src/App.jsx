@@ -2,7 +2,8 @@ import styles from "./App.module.css";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { SendAnswerComponent } from "./components/SendAnswerComponent/SendAnswerComponent";
 
 const fieldSchema = yup.object().shape({
     name: yup
@@ -44,11 +45,8 @@ const fieldSchema = yup.object().shape({
         .max(300, "Некорректное сообщение. Длина должна быть не больше 300 символов."),
 });
 
-const sendFormData = (formData) => {
-    console.log(formData);
-};
-
 export const App = () => {
+    const { isSendForm, setIsSendForm } = useState(false);
     const submitButtonRef = useRef(null);
     const {
         register,
@@ -65,57 +63,74 @@ export const App = () => {
         resolver: yupResolver(fieldSchema),
     });
 
+    const sendFormData = (formData) => {
+        console.log(formData);
+        setIsSendForm(true);
+    };
+
     const emailError = errors.email?.message;
     const passwordError = errors.password?.message;
     const password2Error = errors.password2?.message;
 
     return (
-        <div className={styles.container}>
-            <div className={styles.title}>Напишите нам!</div>
-            <form className={styles.form} onSubmit={handleSubmit(sendFormData)}>
-                <input
-                    className={styles.input}
-                    name="name"
-                    type="text"
-                    placeholder="Имя"
-                    {...register("name")}
-                />
-                <input
-                    className={styles.input}
-                    name="surname"
-                    type="text"
-                    placeholder="Фамилия"
-                    {...register("surname")}
-                />
-                <input
-                    className={styles.input}
-                    name="email"
-                    type="text"
-                    placeholder="email"
-                    {...register("email")}
-                />
-                <input
-                    className={styles.input}
-                    name="phone"
-                    type="phone"
-                    placeholder="Телефон"
-                    {...register("phone")}
-                />
-                <textarea
-                    className={styles.inputTextarea}
-                    name="message"
-                    type="textarea"
-                    placeholder="Сообщение"
-                    maxLength={300}
-                    {...register("message")}
-                />
-                <button ref={submitButtonRef} className={styles.button} type="submit">
-                    отправить
-                </button>
-            </form>
-            {emailError && <div className={styles.error}>{emailError}</div>}
-            {passwordError && <div className={styles.error}>{passwordError}</div>}
-            {password2Error && <div className={styles.error}>{password2Error}</div>}
-        </div>
+        <>
+            {!isSendForm ? (
+                <SendAnswerComponent>Ваше сообщение отправлено!</SendAnswerComponent>
+            ) : (
+                <div className={styles.container}>
+                    <div className={styles.title}>Напишите нам!</div>
+                    <form className={styles.form} onSubmit={handleSubmit(sendFormData)}>
+                        <input
+                            className={styles.input}
+                            name="name"
+                            type="text"
+                            placeholder="Имя"
+                            {...register("name")}
+                        />
+                        <input
+                            className={styles.input}
+                            name="surname"
+                            type="text"
+                            placeholder="Фамилия"
+                            {...register("surname")}
+                        />
+                        <input
+                            className={styles.input}
+                            name="email"
+                            type="text"
+                            placeholder="email"
+                            {...register("email")}
+                        />
+                        <input
+                            className={styles.input}
+                            name="phone"
+                            type="phone"
+                            placeholder="Телефон"
+                            {...register("phone")}
+                        />
+                        <textarea
+                            className={styles.inputTextarea}
+                            name="message"
+                            type="textarea"
+                            placeholder="Сообщение"
+                            maxLength={300}
+                            {...register("message")}
+                        />
+                        <button
+                            ref={submitButtonRef}
+                            className={styles.button}
+                            type="submit"
+                        >
+                            отправить
+                        </button>
+                    </form>
+                    {emailError && <div className={styles.error}>{emailError}</div>}
+                    {passwordError && <div className={styles.error}>{passwordError}</div>}
+                    {password2Error && (
+                        <div className={styles.error}>{password2Error}</div>
+                    )}
+                </div>
+            )}
+        </>
     );
 };
