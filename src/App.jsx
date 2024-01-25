@@ -1,52 +1,53 @@
-import styles from "./App.module.css";
+import { REDIR_URL } from "./constants/constants";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { SendAnswerComponent } from "./components/SendAnswerComponent/SendAnswerComponent";
+import styles from "./App.module.css";
 
 const fieldSchema = yup.object().shape({
     name: yup
         .string()
         .matches(
-            /^[А-Я]$/i,
-            "Некорректное Имя. Разрешенные символы:" + "буквы (кириллица)"
+            /[А-Яа-я]/g,
+            "- Некорректное Имя. Разрешенные символы:" + "буквы (кириллица)"
         )
-        .min(1, "Некорректное Имя. Длина должна быть не меньше 1 символа.")
-        .max(20, "Некорректное Имя. Длина должна быть не больше 20 символов."),
+        .min(1, "- Некорректное Имя. Длина должна быть не меньше 1 символа.")
+        .max(20, "- Некорректное Имя. Длина должна быть не больше 20 символов."),
     surname: yup
         .string()
         .matches(
-            /^[А-Я]$/i,
-            "Некорректное Имя. Разрешенные символы:" + "буквы (кириллица)"
+            /[А-Яа-я]/g,
+            "- Некорректная Фамилия. Разрешенные символы:" + "буквы (кириллица)"
         )
-        .min(1, "Некорректное Имя. Длина должна быть не меньше 1 символа.")
-        .max(20, "Некорректное Имя. Длина должна быть не больше 20 символов."),
+        .min(1, "- Некорректная Фамилия. Длина должна быть не меньше 1 символа.")
+        .max(20, "- Некорректная Фамилия. Длина должна быть не больше 20 символов."),
     email: yup
         .string()
         .matches(
-            /^[A-Z0-9_-]+@[A-Z0-9]+.[A-Z]{2,4}$/i,
-            "Некорректный email. " +
+            /^[A-Z0-9_.-]+@[A-Z0-9]+.[A-Z]{2,4}$/gi,
+            "- Некорректный email. " +
                 "Допустимые символы: латинские буквы, цифры, тире, нижнее подчеркивание."
         ),
     phone: yup
         .string()
-        .matches(/^[0-9]/, "Некорректный телефон. Разрешенные символы:" + "цифры")
-        .min(8, "Некорректный телефон. Длина должна быть не меньше  8 символов.")
-        .max(11, "Некорректный пароль. Длина должна быть не больше 11 символов."),
+        .matches(/[0-9]/g, "- Некорректный телефон. Разрешенные символы:" + "цифры")
+        .min(5, "- Некорректный телефон. Длина должна быть не меньше  8 символов.")
+        .max(11, "- Некорректный телефон. Длина должна быть не больше 11 символов."),
     message: yup
         .string()
         .matches(
-            /^[А-Я]$/i,
-            "Некорректное телефон. Разрешенные символы:" +
-                "буквы (кирилица, тире, нижнее подчеркивание, точка"
+            /[А-Яа-я0-9.,-_ !:]/g,
+            "- Некорректное сообщение. Разрешенные символы:" +
+                "буквы (кирилица), знаки (.,-_!:)"
         )
-        .min(5, "Некорректное сообщение. Длина должна быть не меньше  5 символов.")
-        .max(300, "Некорректное сообщение. Длина должна быть не больше 300 символов."),
+        .min(5, "- Некорректное сообщение. Длина должна быть не меньше  5 символов.")
+        .max(300, "- Некорректное сообщение. Длина должна быть не больше 300 символов."),
 });
 
 export const App = () => {
-    const { isSendForm, setIsSendForm } = useState(false);
+    const [isSendForm, setIsSendForm] = useState(false);
     const submitButtonRef = useRef(null);
     const {
         register,
@@ -63,18 +64,31 @@ export const App = () => {
         resolver: yupResolver(fieldSchema),
     });
 
+    const Nav = (link) => {
+        setTimeout(() => {
+            window.location.replace(link);
+        }, 2000);
+    };
+
     const sendFormData = (formData) => {
-        console.log(formData);
+        const data = formData;
+        console.log(data.name, data.surname, data.email, data.phone, data.message);
         setIsSendForm(true);
     };
 
+    if (isSendForm) {
+        Nav(REDIR_URL);
+    }
+
     const emailError = errors.email?.message;
-    const passwordError = errors.password?.message;
-    const password2Error = errors.password2?.message;
+    const nameError = errors.name?.message;
+    const surnameError = errors.surname?.message;
+    const phoneError = errors.phone?.message;
+    const messageError = errors.message?.message;
 
     return (
         <>
-            {!isSendForm ? (
+            {isSendForm ? (
                 <SendAnswerComponent>Ваше сообщение отправлено!</SendAnswerComponent>
             ) : (
                 <div className={styles.container}>
@@ -125,10 +139,10 @@ export const App = () => {
                         </button>
                     </form>
                     {emailError && <div className={styles.error}>{emailError}</div>}
-                    {passwordError && <div className={styles.error}>{passwordError}</div>}
-                    {password2Error && (
-                        <div className={styles.error}>{password2Error}</div>
-                    )}
+                    {nameError && <div className={styles.error}>{nameError}</div>}
+                    {surnameError && <div className={styles.error}>{surnameError}</div>}
+                    {phoneError && <div className={styles.error}>{phoneError}</div>}
+                    {messageError && <div className={styles.error}>{messageError}</div>}
                 </div>
             )}
         </>
